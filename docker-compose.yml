@@ -1,16 +1,17 @@
 services:
-  mongodb:
-    image: mongo:8.0
-    container_name: mongodb
+  postgres:
+    image: postgres:16
+    container_name: postgres
     restart: unless-stopped
     ports:
-      - "27017:27017"
+      - "5435:5432"
     environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: 123
-      MONGO_INITDB_DATABASE: auth-golang
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: auth_golang
     volumes:
-      - mongodb_data:/data/db
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
 volumes:
-  mongodb_data:
+  postgres_data:

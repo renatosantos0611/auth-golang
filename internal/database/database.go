@@ -1,42 +1,66 @@
 package database
 
 import (
-	"context"
+	"database/sql"
+	"fmt"
 	"log"
 	"os"
-	"time"
 
 	_ "github.com/joho/godotenv/autoload"
-	"go.mongodb.org/mongo-driver/v2/mongo"
-	"go.mongodb.org/mongo-driver/v2/mongo/options"
+	_ "github.com/lib/pq"
 )
 
 type Service struct {
-	Database *mongo.Database
+	DB *sql.DB
 }
 
 var (
-	dbURI  = os.Getenv("MONGODB_URI")
-	dbName = os.Getenv("MONGODB_DATABASE")
+	dbHost     = os.Getenv("DB_HOST")
+	dbPort     = os.Getenv("DB_PORT")
+	dbUser     = os.Getenv("DB_USER")
+	dbPassword = os.Getenv("DB_PASSWORD")
+	dbName     = os.Getenv("DB_NAME")
 )
 
 func New() *Service {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	clientOptions := options.Client().ApplyURI(dbURI)
-
-	client, err := mongo.Connect(clientOptions)
-	if err != nil {
-		log.Fatalf("Failed to connect to MongoDB: %v", err)
+	// Valores padrão se não estiverem definidos nas variáveis de ambiente
+	dbHost := os.Getenv("DB_HOST")
+	if dbHost == "" {
+		dbHost = "localhost"
+	}
+	dbPort := os.Getenv("DB_PORT")
+	if dbPort == "" {
+		dbPort = "5432"
+	}
+	dbUser := os.Getenv("DB_USER")
+	if dbUser == "" {
+		dbUser = "admin"
+	}
+	dbPassword := os.Getenv("DB_PASSWORD")
+	if dbPassword == "" {
+		dbPassword = "123"
+	}
+	dbName := os.Getenv("DB_NAME")
+	if dbName == "" {
+		dbName = "auth_golang"
 	}
 
-	err = client.Ping(ctx, nil)
+	connStr := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+		dbHost, dbPort, dbUser, dbPassword, dbName)
+
+	db, err := sql.Open("postgres", connStr)
 	if err != nil {
-		log.Fatalf("Failed to ping MongoDB: %v", err)
+		log.Fatalf("Failed to connect to PostgreSQL: %v", err)
 	}
+
+	err = db.Ping()
+	if err != nil {
+		log.Fatalf("Failed to ping PostgreSQL: %v", err)
+	}
+
+	log.Println("Successfully connected to PostgreSQL")
 
 	return &Service{
-		Database: client.Database(dbName),
+		DB: db,
 	}
 }
