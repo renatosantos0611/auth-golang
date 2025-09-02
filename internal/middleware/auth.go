@@ -55,6 +55,23 @@ func AuthMiddleware(
 			return
 		}
 
+		// Verificar se o refresh token ainda é válido (não foi limpo no logout)
+		refreshToken, err := c.Cookie("refresh_token")
+		if err != nil || refreshToken == "" {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+				"error": "Refresh token missing",
+			})
+			return
+		}
+
+		// Verificar se o refresh token do usuário corresponde
+		if user.RefreshToken != refreshToken {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+				"error": "Invalid refresh token",
+			})
+			return
+		}
+
 		c.Set("userId", userId)
 		c.Next()
 	}
