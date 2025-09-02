@@ -1,0 +1,67 @@
+# 🚀 Fluxo Completo da API
+# Teste sequencial de todos os endpoints
+# Como um filme com começo, meio e fim! 🎬
+
+@baseUrl = http://localhost:4000
+
+### 🎬 CENA 1: Registrar novo usuário
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Teste Fluxo",
+  "username": "testefluxo",
+  "email": "fluxo@example.com",
+  "password": "123456"
+}
+
+### 🎬 CENA 2: Fazer login (obtém cookies)
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "fluxo@example.com",
+  "password": "123456"
+}
+
+### 🎬 CENA 3: Acessar perfil (usando cookies do login)
+GET {{baseUrl}}/api/user
+Content-Type: application/json
+
+### 🎬 CENA 4: Renovar tokens
+POST {{baseUrl}}/api/auth/refresh
+Content-Type: application/json
+
+{}
+
+### 🎬 CENA 5: Acessar perfil novamente (novos tokens)
+GET {{baseUrl}}/api/user
+Content-Type: application/json
+
+### 🎬 CENA 6: Fazer logout
+POST {{baseUrl}}/api/auth/logout
+Content-Type: application/json
+
+{}
+
+### 🎬 CENA 7: Tentar acessar perfil após logout (deve falhar)
+GET {{baseUrl}}/api/user
+Content-Type: application/json
+
+###
+### 📝 INSTRUÇÕES DE USO:
+###
+### 1. Execute as requisições NA ORDEM de cima para baixo
+### 2. Aguarde cada resposta antes de executar a próxima
+### 3. Os cookies são automaticamente mantidos entre as requisições
+### 4. A última requisição deve retornar erro 401 (Unauthorized)
+###
+### 🏆 RESULTADOS ESPERADOS:
+### CENA 1: 201 Created - "User registered successfully"
+### CENA 2: 200 OK - "success": true + cookies setados
+### CENA 3: 200 OK - dados do usuário
+### CENA 4: 200 OK - "Token refreshed successfully" + novos cookies
+### CENA 5: 200 OK - dados do usuário  
+### CENA 6: 200 OK - "Logged out successfully"
+### CENA 7: 401 Unauthorized - "Unauthorized"
+###

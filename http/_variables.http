@@ -1,0 +1,51 @@
+# 🌐 Configurações e Variáveis Compartilhadas
+# Arquivo de referência com configurações comuns
+# Como um manual de instruções... mas menos chato! 📋
+
+### 🔧 Configuração Principal
+@baseUrl = http://localhost:4000
+@apiPath = api
+
+### 📝 URLs dos Endpoints
+@registerUrl = {{baseUrl}}/{{apiPath}}/auth/register
+@loginUrl = {{baseUrl}}/{{apiPath}}/auth/login
+@refreshUrl = {{baseUrl}}/{{apiPath}}/auth/refresh
+@logoutUrl = {{baseUrl}}/{{apiPath}}/auth/logout
+@userUrl = {{baseUrl}}/{{apiPath}}/user
+
+### 🧪 Dados de Teste Padrão
+# Usuário para testes gerais
+@testEmail = teste@example.com
+@testPassword = 123456
+@testName = Teste User
+@testUsername = testuser
+
+# Admin para testes de permissão
+@adminEmail = admin@example.com
+@adminPassword = admin123456
+@adminName = Admin User
+@adminUsername = admin
+
+### 🎯 Diferentes Ambientes
+# Desenvolvimento (padrão)
+@devUrl = http://localhost:4000
+
+# Staging (descomente quando necessário)
+# @baseUrl = https://api-staging.exemplo.com
+
+# Produção (descomente quando necessário)
+# @baseUrl = https://api.exemplo.com
+
+### 📋 Headers Comuns
+@contentType = application/json
+@userAgent = HTTP-Test-Client/1.0
+
+### 🔍 Como usar este arquivo:
+### 
+### 1. Copie as variáveis que precisa para seus arquivos de teste
+### 2. Substitua {{baseUrl}} pela URL que está usando
+### 3. Use os dados de teste ou crie os seus próprios
+### 4. Lembre-se de ajustar a porta no baseUrl conforme sua configuração
+###
+### 💡 Dica: Mantenha este arquivo como referência, mas use valores
+###         diretos nos arquivos de teste para evitar problemas de resolução

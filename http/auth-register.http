@@ -1,0 +1,71 @@
+# 📝 Registro de Usuário
+# Endpoint para criar uma nova conta de usuário
+# Como abrir uma conta no banco - só que mais rápido e sem filas! 🏦
+
+@baseUrl = http://localhost:4000
+
+### 1. Registrar usuário com dados válidos
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Teste User",
+  "username": "testuser",
+  "email": "teste@example.com",
+  "password": "123456"
+}
+
+### 2. Tentar registrar com o mesmo email (deve falhar)
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Outro User",
+  "username": "outrouser",
+  "email": "teste@example.com",
+  "password": "123456"
+}
+
+### 3. Registrar com dados inválidos - senha muito curta
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "User Teste",
+  "username": "usersenhafraca",
+  "email": "senhafraca@example.com",
+  "password": "123"
+}
+
+### 4. Registrar com email inválido
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "User Email Ruim",
+  "username": "useremailruim",
+  "email": "email-invalido-sem-arroba",
+  "password": "123456"
+}
+
+### 5. Registrar sem campos obrigatórios
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "",
+  "username": "",
+  "email": "",
+  "password": ""
+}
+
+### 6. Registrar admin (para testes de role)
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Admin User",
+  "username": "admin",
+  "email": "admin@example.com",
+  "password": "admin123456"
+}

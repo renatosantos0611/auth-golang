@@ -1,0 +1,59 @@
+# 🔐 Login de Usuário
+# Endpoint para autenticação e obtenção de tokens
+# É como dar a senha secreta do clube... mas com mais segurança! 🤝
+
+@baseUrl = http://localhost:4000
+
+### 1. Login com credenciais válidas
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "teste@example.com",
+  "password": "123456"
+}
+
+### 2. Login com email incorreto
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "naoexiste@example.com",
+  "password": "123456"
+}
+
+### 3. Login com senha incorreta
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "teste@example.com",
+  "password": "senhaerrada"
+}
+
+### 4. Login com email inválido
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "email-sem-formato-valido",
+  "password": "123456"
+}
+
+### 5. Login sem campos obrigatórios
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "",
+  "password": ""
+}
+
+### 6. Login admin (após registrar)
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@example.com",
+  "password": "admin123456"
+}

@@ -1,0 +1,36 @@
+# 👋 Logout
+# Endpoint para encerrar sessão e limpar tokens
+# Como sair do prédio e devolver o crachá! 🏢
+
+@baseUrl = http://localhost:4000
+
+### 1. Logout padrão (limpa cookies)
+# Este endpoint sempre retorna sucesso, mesmo sem cookies
+POST {{baseUrl}}/api/auth/logout
+Content-Type: application/json
+
+{}
+
+### 2. Logout após login (cenário real)
+# Execute esta sequência para testar o fluxo completo:
+# 1. Faça login
+# 2. Execute este logout
+# 3. Tente acessar endpoint protegido (deve falhar)
+POST {{baseUrl}}/api/auth/logout
+Content-Type: application/json
+
+{}
+
+### 3. Logout múltiplo (deve funcionar sempre)
+# Testar logout quando já foi feito logout
+POST {{baseUrl}}/api/auth/logout
+Content-Type: application/json
+
+{}
+
+### 4. Logout com headers adicionais (opcional)
+POST {{baseUrl}}/api/auth/logout
+Content-Type: application/json
+User-Agent: HTTP-Test-Client
+
+{}

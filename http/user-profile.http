@@ -1,0 +1,39 @@
+# 👤 Perfil do Usuário
+# Endpoint protegido para obter dados do usuário logado
+# Como olhar no espelho... mas via API! 🪞
+
+@baseUrl = http://localhost:4000
+
+### 1. Obter dados do usuário logado (requer login)
+# IMPORTANTE: Execute o login primeiro para obter os cookies de autenticação
+GET {{baseUrl}}/api/user
+Content-Type: application/json
+
+### 2. Tentar acessar sem autenticação (deve falhar)
+# Este teste simula acesso sem token de acesso
+GET {{baseUrl}}/api/user
+Content-Type: application/json
+Cookie: access_token=
+
+### 3. Tentar acessar com token inválido (deve falhar)
+GET {{baseUrl}}/api/user
+Content-Type: application/json
+Cookie: access_token=token.invalido.aqui
+
+### 4. Tentar acessar com token expirado (teste manual)
+# Para testar: use um token antigo ou aguarde expiração (15 minutos)
+GET {{baseUrl}}/api/user
+Content-Type: application/json
+Cookie: access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJleGFtcGxlLWV4cGlyZWQtdG9rZW4iLCJleHAiOjE2MDAwMDAwMDB9.invalid
+
+### 5. Testar com User-Agent personalizado
+GET {{baseUrl}}/api/user
+Content-Type: application/json
+User-Agent: HTTP-Test-Client/1.0
+
+### FLUXO COMPLETO DE TESTE:
+# 1. Execute auth-register.http (primeira requisição)
+# 2. Execute auth-login.http (primeira requisição) 
+# 3. Execute esta requisição (primeira - deve funcionar)
+# 4. Execute auth-logout.http
+# 5. Execute esta requisição novamente (deve falhar)
