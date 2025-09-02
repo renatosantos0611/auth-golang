@@ -5,19 +5,19 @@ import (
 	"strings"
 	"time"
 
-	"go.mongodb.org/mongo-driver/v2/bson"
+	"github.com/google/uuid"
 )
 
 type User struct {
-	ID           bson.ObjectID `bson:"_id,omitempty"`
-	Name         string        `bson:"name" json:"name"`
-	Username     string        `bson:"username" json:"username"`
-	Email        string        `bson:"email" json:"email"`
-	Password     string        `bson:"password" json:"password,omitempty"`
-	RefreshToken string        `bson:"refresh_token" json:"refresh_token,omitempty"`
-	Role         Role          `bson:"role" json:"role"`
-	CreatedAt    time.Time     `bson:"created_at" json:"created_at"`
-	UpdatedAt    time.Time     `bson:"updated_at" json:"updated_at"`
+	ID           uuid.UUID `db:"id" json:"id"`
+	Name         string    `db:"name" json:"name"`
+	Username     string    `db:"username" json:"username"`
+	Email        string    `db:"email" json:"email"`
+	Password     string    `db:"password" json:"password,omitempty"`
+	RefreshToken string    `db:"refresh_token" json:"refresh_token,omitempty"`
+	Role         Role      `db:"role" json:"role"`
+	CreatedAt    time.Time `db:"created_at" json:"created_at"`
+	UpdatedAt    time.Time `db:"updated_at" json:"updated_at"`
 }
 
 func (u *User) AddRefreshToken(token string) {
@@ -28,11 +28,11 @@ func (u *User) AddRefreshToken(token string) {
 func (u *User) Validate() error {
 	errorMessages := []string{}
 
-	if len(u.Username) < 3 {
+	if len(u.Name) < 3 {
 		errorMessages = append(errorMessages, "Name must be at least 3 characters long")
 	}
 
-	if len(u.Username) < 3 {
+	if len(u.Username) < 6 {
 		errorMessages = append(errorMessages, "Username must be at least 6 characters long")
 	}
 
@@ -40,7 +40,7 @@ func (u *User) Validate() error {
 		errorMessages = append(errorMessages, "Password must be at least 8 characters long")
 	}
 
-	if len(u.Email) == 6 {
+	if len(u.Email) < 6 {
 		errorMessages = append(errorMessages, "Email must be at least 6 characters long")
 	}
 
@@ -53,7 +53,7 @@ func (u *User) Validate() error {
 
 func NewUser(name, username, email, password string) (*User, error) {
 	user := &User{
-		ID:        bson.NewObjectID(),
+		ID:        uuid.New(),
 		Name:      name,
 		Username:  username,
 		Email:     email,
@@ -99,7 +99,7 @@ type UserResponse struct {
 
 func (u *User) ToResponse() UserResponse {
 	return UserResponse{
-		ID:        u.ID.Hex(),
+		ID:        u.ID.String(),
 		Name:      u.Name,
 		Username:  u.Username,
 		Email:     u.Email,
