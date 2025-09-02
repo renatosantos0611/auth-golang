@@ -6,7 +6,7 @@
     ],
     "github.copilot.chat.reviewSelection.instructions": [
         {
-            "text": "You are an expert code reviewer. Provide constructive feedback on the selected code changes, focusing on code quality, best practices, and potential improvements. Be concise and specific."
+            "file": "./docs/code-review-best-practices.md"
         }
     ]
 }
