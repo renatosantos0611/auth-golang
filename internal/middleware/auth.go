@@ -17,7 +17,7 @@ func AuthMiddleware(
 
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"error": "Unauthorized",
+				"error": "Não autorizado",
 			})
 			return
 		}
@@ -27,7 +27,7 @@ func AuthMiddleware(
 
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"error": "Invalid token",
+				"error": "Token inválido",
 			})
 			return
 		}
@@ -35,7 +35,7 @@ func AuthMiddleware(
 		userId, ok := claims["sub"].(string)
 		if !ok {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"error": "Invalid userID in token",
+				"error": "ID de usuário inválido no token",
 			})
 			return
 		}
@@ -43,14 +43,14 @@ func AuthMiddleware(
 		user, err := userRepository.FindByID(c.Request.Context(), userId)
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
-				"error": err.Error(),
+				"error": "Erro interno ao buscar usuário",
 			})
 			return
 		}
 
 		if user == nil {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"error": "User not found",
+				"error": "Usuário não encontrado",
 			})
 			return
 		}
@@ -59,7 +59,7 @@ func AuthMiddleware(
 		refreshToken, err := c.Cookie("refresh_token")
 		if err != nil || refreshToken == "" {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"error": "Refresh token missing",
+				"error": "Refresh token ausente",
 			})
 			return
 		}
@@ -67,7 +67,7 @@ func AuthMiddleware(
 		// Verificar se o refresh token do usuário corresponde
 		if user.RefreshToken != refreshToken {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"error": "Invalid refresh token",
+				"error": "Refresh token inválido",
 			})
 			return
 		}
