@@ -25,7 +25,13 @@ func (h *UserHandler) GetUser(c *gin.Context) {
 		return
 	}
 
-	user, err := h.UserRepository.FindByID(c.Request.Context(), userId.(string))
+	userIdString, ok := userId.(string)
+	if !ok {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid user ID format"})
+		return
+	}
+
+	user, err := h.UserRepository.FindByID(c.Request.Context(), userIdString)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

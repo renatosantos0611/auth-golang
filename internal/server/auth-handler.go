@@ -11,12 +11,12 @@ import (
 )
 
 type AuthHandler struct {
-	userRepository repositories.UsersRepositoryInterface
+	UserRepository repositories.UsersRepositoryInterface
 }
 
 func newAuthHandler(userRepository repositories.UsersRepositoryInterface) *AuthHandler {
 	return &AuthHandler{
-		userRepository: userRepository,
+		UserRepository: userRepository,
 	}
 }
 
@@ -33,7 +33,7 @@ func (h *AuthHandler) Register(c *gin.Context) {
 		return
 	}
 
-	user, err := h.userRepository.FindByEmail(c.Request.Context(), req.Email)
+	user, err := h.UserRepository.FindByEmail(c.Request.Context(), req.Email)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -60,7 +60,7 @@ func (h *AuthHandler) Register(c *gin.Context) {
 	}
 
 	//save the user to the database
-	err = h.userRepository.Create(c.Request.Context(), user)
+	err = h.UserRepository.Create(c.Request.Context(), user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -83,7 +83,7 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		return
 	}
 
-	user, err := h.userRepository.FindByEmail(c.Request.Context(), req.Email)
+	user, err := h.UserRepository.FindByEmail(c.Request.Context(), req.Email)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -99,13 +99,13 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		return
 	}
 
-	accessToken, err := auth.GenerateAccessToken(user.ID.Hex())
+	accessToken, err := auth.GenerateAccessToken(user.ID.String())
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate access token"})
 		return
 	}
 
-	refreshToken, err := auth.GenerateRefreshToken(user.ID.Hex())
+	refreshToken, err := auth.GenerateRefreshToken(user.ID.String())
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate refresh token"})
 		return
@@ -123,7 +123,7 @@ func (h *AuthHandler) Login(c *gin.Context) {
 
 	user.AddRefreshToken(refreshToken)
 
-	_, err = h.userRepository.Update(c.Request.Context(), user)
+	_, err = h.UserRepository.Update(c.Request.Context(), user)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update user with refresh token"})
@@ -152,7 +152,7 @@ func (h *AuthHandler) RefreshToken(c *gin.Context) {
 		return
 	}
 
-	user, err := h.userRepository.FindByRefreshToken(c.Request.Context(), refreshToken)
+	user, err := h.UserRepository.FindByRefreshToken(c.Request.Context(), refreshToken)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -163,13 +163,13 @@ func (h *AuthHandler) RefreshToken(c *gin.Context) {
 		return
 	}
 
-	newAccessToken, err := auth.GenerateAccessToken(user.ID.Hex())
+	newAccessToken, err := auth.GenerateAccessToken(user.ID.String())
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate new access token"})
 		return
 	}
 
-	newRefreshToken, err := auth.GenerateRefreshToken(user.ID.Hex())
+	newRefreshToken, err := auth.GenerateRefreshToken(user.ID.String())
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate new refresh token"})
 		return
@@ -186,7 +186,7 @@ func (h *AuthHandler) RefreshToken(c *gin.Context) {
 	)
 
 	user.AddRefreshToken(newRefreshToken)
-	_, err = h.userRepository.Update(c.Request.Context(), user)
+	_, err = h.UserRepository.Update(c.Request.Context(), user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update user with new refresh token"})
 		return
@@ -216,10 +216,10 @@ func (h *AuthHandler) Logout(c *gin.Context) {
 	// Optionally, you can also remove the refresh token from the user in the database
 	refreshToken, err := c.Cookie("refresh_token")
 	if err == nil {
-		user, err := h.userRepository.FindByRefreshToken(c.Request.Context(), refreshToken)
+		user, err := h.UserRepository.FindByRefreshToken(c.Request.Context(), refreshToken)
 		if err == nil && user != nil {
 			user.AddRefreshToken("")                                  // Clear the refresh token
-			_, _ = h.userRepository.Update(c.Request.Context(), user) // Ignore error for logout
+			_, _ = h.UserRepository.Update(c.Request.Context(), user) // Ignore error for logout
 		}
 	}
 
