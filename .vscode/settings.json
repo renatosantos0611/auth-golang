@@ -1,8 +1,8 @@
 {
     "github.copilot.chat.commitMessageGeneration.instructions": [
         {
-            "text": "Use conventional commit message format and description should be Brazilian Portuguese and less than 100 characters. But something like feat(auth): description"
-        },
+            "file": "./docs/commit-message-guidelines.md"
+        }
     ],
     "github.copilot.chat.reviewSelection.instructions": [
         {
